@@ -1,0 +1,1 @@
+﻿global using KramarDev.Quiz.BLLAbstractions.Dto;

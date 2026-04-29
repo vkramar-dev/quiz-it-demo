@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.3.11520.95
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KramarDev.Quiz.DAL", "KramarDev.Quiz.DAL\KramarDev.Quiz.DAL.csproj", "{05A17B83-00F9-4EE1-B1EC-37A67AE8C7A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KramarDev.Quiz.DALAbstractions", "KramarDev.Quiz.DALAbstractions\KramarDev.Quiz.DALAbstractions.csproj", "{0C2DBF98-2D8B-463B-8D8A-486B639D25D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KramarDev.Quiz.BLL", "KramarDev.Quiz.BLL\KramarDev.Quiz.BLL.csproj", "{7115713D-C23C-459D-8FAF-8AC47178DAB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KramarDev.Quiz.BLLAbstractions", "KramarDev.Quiz.BLLAbstractions\KramarDev.Quiz.BLLAbstractions.csproj", "{6F924B61-2804-4370-AE6C-6ACAA529B3B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KramarDev.Quiz.WebAPI", "KramarDev.Quiz.WebAPI\KramarDev.Quiz.WebAPI.csproj", "{AE148428-5109-46BB-98B5-D980BC84767B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuizIT.Tests", "QuizIT.Tests\QuizIT.Tests.csproj", "{05BB4330-B166-45B0-9A34-AE11379179E3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05A17B83-00F9-4EE1-B1EC-37A67AE8C7A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05A17B83-00F9-4EE1-B1EC-37A67AE8C7A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05A17B83-00F9-4EE1-B1EC-37A67AE8C7A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05A17B83-00F9-4EE1-B1EC-37A67AE8C7A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C2DBF98-2D8B-463B-8D8A-486B639D25D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C2DBF98-2D8B-463B-8D8A-486B639D25D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C2DBF98-2D8B-463B-8D8A-486B639D25D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C2DBF98-2D8B-463B-8D8A-486B639D25D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7115713D-C23C-459D-8FAF-8AC47178DAB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7115713D-C23C-459D-8FAF-8AC47178DAB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7115713D-C23C-459D-8FAF-8AC47178DAB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7115713D-C23C-459D-8FAF-8AC47178DAB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F924B61-2804-4370-AE6C-6ACAA529B3B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F924B61-2804-4370-AE6C-6ACAA529B3B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F924B61-2804-4370-AE6C-6ACAA529B3B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F924B61-2804-4370-AE6C-6ACAA529B3B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE148428-5109-46BB-98B5-D980BC84767B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE148428-5109-46BB-98B5-D980BC84767B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE148428-5109-46BB-98B5-D980BC84767B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE148428-5109-46BB-98B5-D980BC84767B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05BB4330-B166-45B0-9A34-AE11379179E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05BB4330-B166-45B0-9A34-AE11379179E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05BB4330-B166-45B0-9A34-AE11379179E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05BB4330-B166-45B0-9A34-AE11379179E3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1F4EAEB8-DBA8-4824-AD89-C770290E2954}
+	EndGlobalSection
+EndGlobal
