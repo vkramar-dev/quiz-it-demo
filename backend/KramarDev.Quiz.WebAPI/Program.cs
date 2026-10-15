@@ -58,6 +58,7 @@ public class Program
         builder.Services.AddScoped<IStatisticsService, StatisticsService>();
         builder.Services.AddSingleton<IStatisticsCacheService, StatisticsCacheService>();
         builder.Services.AddSingleton<IApplicationDataStore, ApplicationDataStore>();
+        builder.Services.AddLogger(builder.Configuration);
         builder.Services.AddMemoryCache();
 
         var app = builder.Build();
@@ -71,6 +72,10 @@ public class Program
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
+
+        var logger = app.Services.GetRequiredService<KramarDev.LogPlatform.LogClient.ILogger>();
+        await logger.LogAspNetInfoAsync(
+            "Flashcard API started", Severity.Low, SourceType.Backend, null, null, null, null, true);
 
         using (var scope = app.Services.CreateScope())
         {

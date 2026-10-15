@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.RateLimiting;
 
@@ -118,6 +119,25 @@ public static class StartupExtensions
         return app;
     }
 
+    public static IServiceCollection AddLogger(this IServiceCollection services, IConfiguration configuration)
+    {
+        var logapiSecret = configuration["LogApi:Secret"]
+            ?? throw new InvalidOperationException("LogApi:Secret was not found.");
+
+        services.AddSingleton<LogPlatform.LogClient.ILogger>(sp =>
+        {
+            var env = sp.GetRequiredService<IHostEnvironment>();
+
+            return new LogPlatform.LogClient.Logger(
+                sp.GetRequiredService<IHttpContextAccessor>(),
+                Product.FlashcardTrainer,
+                logapiSecret,
+                env.IsDevelopment() ? "https://localhost:7011" : null);
+        });
+
+        return services;
+    }
+
     public static WebApplication UseAppExceptionHandler(this WebApplication app)
     {
         app.UseExceptionHandler(errorApp =>
@@ -125,8 +145,7 @@ public static class StartupExtensions
             errorApp.Run(async context =>
             {
                 var logger = context.RequestServices
-                    .GetRequiredService<ILoggerFactory>()
-                    .CreateLogger("GlobalExceptionHandler");
+                    .GetRequiredService<KramarDev.LogPlatform.LogClient.ILogger>();
 
                 var env = context.RequestServices
                     .GetRequiredService<IHostEnvironment>();
@@ -138,7 +157,13 @@ public static class StartupExtensions
 
                 if (exception is not null)
                 {
-                    logger.LogError(exception, "Unhandled exception occurred.");
+                    await logger.LogAspNetExceptionAsync(exception, "Global Handler",
+                        Severity.Medium, SourceType.Backend);
+                }
+                else
+                {
+                    await logger.LogAspNetInfoAsync("Global Handler",
+                        Severity.Low, SourceType.Backend);
                 }
 
                 context.Response.Clear();

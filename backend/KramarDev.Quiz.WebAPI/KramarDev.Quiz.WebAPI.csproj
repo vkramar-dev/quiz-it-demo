@@ -19,4 +19,14 @@
     <ProjectReference Include="..\KramarDev.Quiz.DAL\KramarDev.Quiz.DAL.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Lib\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="KramarDev.LogPlatform.LogClient">
+      <HintPath>Lib\KramarDev.LogPlatform.LogClient.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
