@@ -2,7 +2,7 @@
 
 public interface ITestRepository
 {
-    Task<int> CreateTestAsync(NewTestDto newTest, CancellationToken cancellationToken = default);
+    Task<int> CreateTestAndSaveAsync(NewTestDto newTest, CancellationToken cancellationToken = default);
 
     Task<QuestionInfoDto> GetQuestionInfoAsync(int questionId, CancellationToken cancellationToken = default);
 

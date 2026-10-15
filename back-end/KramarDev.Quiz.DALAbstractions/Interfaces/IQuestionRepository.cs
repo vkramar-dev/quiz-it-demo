@@ -16,6 +16,6 @@ public interface IQuestionRepository
     Task UpdateTestQuestionDateAndSaveAsync(int testId,
         int testQuestionId, CancellationToken cancellationToken = default);
 
-    Task IncrementQuestionCounterAsync(
+    Task IncrementQuestionCounterAndSaveAsync(
         int questionId, bool isCorrectAnswer, CancellationToken cancellationToken = default);
 }

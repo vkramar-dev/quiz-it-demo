@@ -64,7 +64,7 @@ public sealed class QuestionRepository(QuizDbContext dbCtx) : IQuestionRepositor
                     .SetProperty(tq => tq.RequestDate, DateTime.UtcNow), cancellationToken);
     }
 
-    public Task IncrementQuestionCounterAsync(
+    public Task IncrementQuestionCounterAndSaveAsync(
         int questionId, bool isCorrectAnswer, CancellationToken cancellationToken = default)
     {
         if (isCorrectAnswer)

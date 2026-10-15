@@ -27,7 +27,7 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
             TotalPoints = testData.TotalPoints,
         };
 
-        int testId = await _uow.TestRepository.CreateTestAsync(newTest, cancellationToken);
+        int testId = await _uow.TestRepository.CreateTestAndSaveAsync(newTest, cancellationToken);
 
         try
         {
@@ -186,7 +186,7 @@ public sealed class TestService(IUnitOfWork uow, IApplicationDataStore dataServi
         bool isCorrect = answer.AnswerPoints > 0;
 
         await _uow.TestRepository.AnswerAndSaveAsync(answer, cancellationToken);
-        await _uow.QuestionRepository.IncrementQuestionCounterAsync(questionId, isCorrect, cancellationToken);
+        await _uow.QuestionRepository.IncrementQuestionCounterAndSaveAsync(questionId, isCorrect, cancellationToken);
     }
 
     private async Task<TestResultDto> BuildAndCompleteTestAsync(
