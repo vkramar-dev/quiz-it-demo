@@ -1,6 +1,8 @@
 using KramarDev.Quiz.BLL.Services;
 using KramarDev.Quiz.DAL;
 using KramarDev.Quiz.DAL.Database;
+using KramarDev.Quiz.DAL.Repositories;
+using KramarDev.Quiz.DALAbstractions.Repositories;
 using KramarDev.Quiz.DAL.Database.Tables;
 using KramarDev.Quiz.DALAbstractions;
 using KramarDev.Quiz.WebAPI.Controllers;
@@ -50,6 +52,8 @@ public class Program
         builder.Services.AddAuthorization();
         builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
+        builder.Services.AddScoped<IUserAccountRepository, UserAccountRepository>();
+        builder.Services.AddScoped<IAppService, AppService>();
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
         builder.Services.AddScoped<ITestService, TestService>();
         builder.Services.AddScoped<IStatisticsService, StatisticsService>();

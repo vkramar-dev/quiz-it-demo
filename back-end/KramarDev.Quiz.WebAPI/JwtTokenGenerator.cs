@@ -1,40 +1,39 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
+﻿using System.Security.Claims;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
-using KramarDev.Quiz.DAL.Database.Tables;
+using Microsoft.IdentityModel.Tokens;
 
 namespace KramarDev.Quiz.WebAPI;
 
 public interface IJwtTokenGenerator
 {
-    Task<string> GenerateTokenAsync(User user);
+    Task<string> GenerateTokenAsync(string login, IReadOnlyList<string> roles);
 }
 
-public sealed class JwtTokenGenerator(UserManager<User> userManager, IConfiguration config) : IJwtTokenGenerator
+public sealed class JwtTokenGenerator(IConfiguration config) : IJwtTokenGenerator
 {
     private readonly IConfiguration _config = config;
-    private readonly UserManager<User> _userManager = userManager;
 
-    public async Task<string> GenerateTokenAsync(User user)
+    public Task<string> GenerateTokenAsync(string login, IReadOnlyList<string> roles)
     {
-        var username = user.UserName
-            ?? throw new InvalidOperationException("UserName is missing.");
+        if (string.IsNullOrWhiteSpace(login))
+            throw new InvalidOperationException("UserName is missing.");
 
         var tokenKey = _config["JWTSettings:TokenKey"]
             ?? throw new InvalidOperationException("JWTSettings:TokenKey is not configured.");
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, username),
-            new(ClaimTypes.Name, username)
+            new(ClaimTypes.NameIdentifier, login),
+            new(ClaimTypes.Name, login)
         };
 
-        var roles = await _userManager.GetRolesAsync(user);
-        foreach (var role in roles)
+        if (roles != null)
         {
-            claims.Add(new Claim(ClaimTypes.Role, role));
+            foreach (string role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
         }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey));
@@ -48,6 +47,6 @@ public sealed class JwtTokenGenerator(UserManager<User> userManager, IConfigurat
             signingCredentials: creds
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+        return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(tokenOptions));
     }
 }

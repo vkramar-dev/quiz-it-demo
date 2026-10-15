@@ -1,20 +1,17 @@
-﻿using KramarDev.Quiz.DAL.Database.Tables;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Rewrite;
 
 namespace KramarDev.Quiz.WebAPI.Controllers;
 
 public sealed class AppController(IApplicationDataStore dataService,
-    UserManager<User> userManager, IJwtTokenGenerator tokenService) : BaseController
+    IAppService appService, IJwtTokenGenerator tokenService) : BaseController
 {
     readonly IApplicationDataStore _dataService = dataService;
-    readonly UserManager<User> _userManager = userManager;
+    readonly IAppService _appService = appService;
     readonly IJwtTokenGenerator _tokenService = tokenService;
 
     [HttpGet("init-state")]
-    public async Task<ActionResult<AppStateModel>> GetInitialStateAsync()
+    public async Task<ActionResult<AppStateModel>> GetInitialStateAsync(CancellationToken cancellationToken)
     {
         AppStateModel model = new();
 
@@ -23,16 +20,9 @@ public sealed class AppController(IApplicationDataStore dataService,
 
         if (UserName != null)
         {
-            var user = await _userManager.FindByNameAsync(UserName);
-
+            AuthUserDto user = await _appService.FindByNameAsync(UserName, cancellationToken);
             if (user != null)
-            {
-                model.User = new UserModel
-                {
-                    Token = await _tokenService.GenerateTokenAsync(user),
-                    Login = user.UserName
-                };
-            }
+                model.User = await ToModelAsync(user);
         }
 
         return model;
@@ -41,35 +31,26 @@ public sealed class AppController(IApplicationDataStore dataService,
     [HttpPost("login")]
     [EnableRateLimiting(RateLimiterName)]
     [RequestSizeLimit(4 * 1024)]
-    public async Task<ActionResult<UserModel>> Login(LoginModel login)
+    public async Task<ActionResult<UserModel>> Login(LoginModel login, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByNameAsync(login.Username);
-        if (user == null || !await _userManager.CheckPasswordAsync(user, login.Password))
-        {
+        AuthUserDto user = await _appService.LoginAsync(login.Username, login.Password, cancellationToken);
+        if (user == null)
             return Unauthorized();
-        }
 
-        return new UserModel
-        {
-            Token = await _tokenService.GenerateTokenAsync(user),
-            Login = user.UserName
-        };
+        return await ToModelAsync(user);
     }
 
     [HttpPost("register")]
     [EnableRateLimiting(RateLimiterName)]
     [RequestSizeLimit(4 * 1024)]
-    public async Task<ActionResult<UserModel>> Register(RegisterModel register)
+    public async Task<ActionResult<UserModel>> Register(RegisterModel register, CancellationToken cancellationToken)
     {
-        const string MemberRole = "Member";
+        RegisterResultDto result = await _appService.RegisterAsync(
+            register.Username, register.Password, cancellationToken);
 
-        var user = new User { UserName = register.Username };
-
-        var result = await _userManager.CreateAsync(user, register.Password);
-
-        if (!result.Succeeded)
+        if (result.Errors.Length > 0)
         {
-            foreach (var error in result.Errors)
+            foreach (AccountErrorDto error in result.Errors)
             {
                 ModelState.AddModelError(error.Code, error.Description);
             }
@@ -77,22 +58,15 @@ public sealed class AppController(IApplicationDataStore dataService,
             return ValidationProblem();
         }
 
-        var roleResult = await _userManager.AddToRoleAsync(user, MemberRole);
+        return await ToModelAsync(result.User);
+    }
 
-        if (!roleResult.Succeeded)
-        {
-            foreach (var error in roleResult.Errors)
-            {
-                ModelState.AddModelError(error.Code, error.Description);
-            }
-
-            return ValidationProblem();
-        }
-
+    private async Task<UserModel> ToModelAsync(AuthUserDto user)
+    {
         return new UserModel
         {
-            Token = await _tokenService.GenerateTokenAsync(user),
-            Login = user.UserName
+            Token = await _tokenService.GenerateTokenAsync(user.Login, user.Roles),
+            Login = user.Login
         };
     }
 }
