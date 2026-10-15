@@ -4,12 +4,12 @@ namespace KramarDev.Quiz.DAL.Database;
 
 public static class DatabaseConfig
 {
-    private const string QuizDbConnectionKey = "QuizDbConnection";
+    private const string DbConnectionKey = "QIT_DbConnection";
 
     public static string GetConnectionString()
     {
         // Try to get from environment variable first
-        var connectionString = Environment.GetEnvironmentVariable(QuizDbConnectionKey);
+        var connectionString = Environment.GetEnvironmentVariable(DbConnectionKey);
 
         if (!string.IsNullOrEmpty(connectionString))
         {
@@ -22,7 +22,7 @@ public static class DatabaseConfig
             .AddJsonFile("appsettings.json", optional: true)
             .Build();
 
-        connectionString = configuration.GetConnectionString(QuizDbConnectionKey);
+        connectionString = configuration.GetConnectionString(DbConnectionKey);
 
         if (!string.IsNullOrEmpty(connectionString))
         {

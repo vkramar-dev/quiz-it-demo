@@ -19,8 +19,8 @@ public sealed class JwtTokenGenerator(IConfiguration config) : IJwtTokenGenerato
         if (string.IsNullOrWhiteSpace(login))
             throw new InvalidOperationException("UserName is missing.");
 
-        var tokenKey = _config["JWTSettings:TokenKey"]
-            ?? throw new InvalidOperationException("JWTSettings:TokenKey is not configured.");
+        var tokenKey = _config["JWTSettings:QIT_TokenKey"]
+            ?? throw new InvalidOperationException("JWTSettings:QIT_TokenKey is not configured.");
 
         var claims = new List<Claim>
         {

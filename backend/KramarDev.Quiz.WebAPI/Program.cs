@@ -19,8 +19,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        var connectionString = builder.Configuration.GetConnectionString("QuizDbConnection")
-                ?? throw new InvalidOperationException("Connection string 'QuizDbConnection' was not found.");
+        var connectionString = builder.Configuration.GetConnectionString("QIT_DbConnection")
+                ?? throw new InvalidOperationException("Connection string 'QIT_DbConnection' was not found.");
 
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
@@ -60,6 +60,8 @@ public class Program
         builder.Services.AddSingleton<IApplicationDataStore, ApplicationDataStore>();
         builder.Services.AddLogger(builder.Configuration);
         builder.Services.AddMemoryCache();
+
+        builder.Services.AddHttpContextAccessor();
 
         var app = builder.Build();
 
