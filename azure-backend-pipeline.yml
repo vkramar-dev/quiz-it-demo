@@ -4,16 +4,16 @@ trigger:
       - main
   paths:
     include:
-      - back-end/*
-      - back-end/**
+      - backend/*
+      - backend/**
 
 pool:
   vmImage: ubuntu-latest
 
 variables:
   buildConfiguration: 'Release'
-  apiProject: 'back-end/KramarDev.Quiz.WebAPI/KramarDev.Quiz.WebAPI.csproj'
-  testProjects: 'back-end/QuizIT.Tests/QuizIT.Tests.csproj'
+  apiProject: 'backend/KramarDev.Quiz.WebAPI/KramarDev.Quiz.WebAPI.csproj'
+  testProjects: 'backend/QuizIT.Tests/QuizIT.Tests.csproj'
 
 steps:
 - task: UseDotNet@2

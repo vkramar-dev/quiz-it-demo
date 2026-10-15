@@ -92,11 +92,14 @@ This project was built to demonstrate:
 ## 🛠️ Running locally
 
 ```bash
-# backend
+# API — https://localhost:7072
 cd backend
-dotnet run
+dotnet run --project KramarDev.Quiz.WebAPI
 
-# frontend
+# frontend — http://localhost:3000
 cd frontend
 npm install
 npm run dev
+```
+
+The frontend calls `https://localhost:7072/api/` unless `NEXT_PUBLIC_API_URL` is set.
