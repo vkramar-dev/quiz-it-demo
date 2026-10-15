@@ -1,11 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace KramarDev.Quiz.WebAPI;
 
@@ -176,18 +178,33 @@ public static class StartupExtensions
         return app;
     }
 
+    public static IServiceCollection AddAppForwardedHeaders(this IServiceCollection services)
+    {
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.KnownIPNetworks.Clear();
+            options.KnownProxies.Clear();
+        });
+
+        return services;
+    }
+
     public static IServiceCollection AddAppRateLimiting(this IServiceCollection services, string rateLimitName)
     {
         services.AddRateLimiter(options =>
         {
-            options.AddFixedWindowLimiter(rateLimitName, limiterOptions =>
-            {
-                limiterOptions.PermitLimit = 10;
-                limiterOptions.Window = TimeSpan.FromMinutes(1);
-                limiterOptions.QueueLimit = 0;
-            });
-
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+
+            options.AddPolicy(rateLimitName, httpContext =>
+                RateLimitPartition.GetFixedWindowLimiter(
+                    httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                    _ => new FixedWindowRateLimiterOptions
+                    {
+                        PermitLimit = 10,
+                        Window = TimeSpan.FromMinutes(1),
+                        QueueLimit = 0
+                    }));
         });
 
         return services;

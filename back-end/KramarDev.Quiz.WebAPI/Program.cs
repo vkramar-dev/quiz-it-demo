@@ -44,6 +44,7 @@ public class Program
         .AddRoles<IdentityRole>()
         .AddEntityFrameworkStores<QuizDbContext>();
 
+        builder.Services.AddAppForwardedHeaders();
         builder.Services.AddAppRateLimiting(BaseController.RateLimiterName);
         builder.Services.AddJwtAuthentication(builder.Configuration);
         builder.Services.AddAuthorization();
@@ -57,6 +58,7 @@ public class Program
         builder.Services.AddMemoryCache();
 
         var app = builder.Build();
+        app.UseForwardedHeaders();
         app.UseApiNoCaching();
         app.UseAppExceptionHandler();
         app.UseCustomSwagger(app.Environment);
