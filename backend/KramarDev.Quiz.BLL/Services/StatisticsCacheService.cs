@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Concurrent;
 
 namespace KramarDev.Quiz.BLL.Services;
 
@@ -14,7 +13,6 @@ public sealed class StatisticsCacheService(
 
     private readonly IServiceScopeFactory _scopeFactory = scopeFactory;
     private readonly IMemoryCache _cache = cache;
-    private readonly ConcurrentDictionary<string, SemaphoreSlim> _semaphoresDictionary = new();
 
     public ValueTask<StatisticsPageDto> GetPageAsync(StatisticsRequestDto requestDto)
     {
@@ -30,39 +28,28 @@ public sealed class StatisticsCacheService(
     {
         var (topicId, scoreThreshold, pageSize, pageNumber) = requestDto;
 
-        SemaphoreSlim sem = _semaphoresDictionary.GetOrAdd(cacheKey, _ => new SemaphoreSlim(1, 1));
+        if (_cache.TryGetValue(cacheKey, out StatisticsPageDto cachedPage))
+            return cachedPage;
 
-        try
+        // pageNumber is zero-based
+        int startIndex = pageNumber * pageSize + 1;
+
+        await using var scope = _scopeFactory.CreateAsyncScope();
+        var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
+        var dalRows = await uow.StatisticsRepository.SelectByFilterAsync(
+            topicId, scoreThreshold, pageSize, pageNumber);
+
+        int totalCount = await uow.StatisticsRepository.GetTotalCountAsync(topicId, scoreThreshold);
+
+        RowDto[] rows = DtoMapper.FromDAL(dalRows, startIndex);
+
+        StatisticsPageDto statistics = new()
         {
-            await sem.WaitAsync();
+            Rows = rows,
+            TotalCount = totalCount
+        };
 
-            if (_cache.TryGetValue(cacheKey, out StatisticsPageDto cachedPage))
-                return cachedPage;
-
-            // pageNumber is zero-based
-            int startIndex = pageNumber * pageSize + 1;
-
-            await using var scope = _scopeFactory.CreateAsyncScope();
-            var uow = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-            var dalRows = await uow.StatisticsRepository.SelectByFilterAsync(
-                topicId, scoreThreshold, pageSize, pageNumber);
-
-            int totalCount = await uow.StatisticsRepository.GetTotalCountAsync(topicId, scoreThreshold);
-
-            RowDto[] rows = DtoMapper.FromDAL(dalRows, startIndex);
-
-            StatisticsPageDto statistics = new()
-            {
-                Rows = rows,
-                TotalCount = totalCount
-            };
-
-            return _cache.Set(cacheKey, statistics, CacheOptions);
-        }
-        finally
-        {
-            sem.Release();
-        }        
+        return _cache.Set(cacheKey, statistics, CacheOptions);
     }
 
     private static string GetCacheKey(StatisticsRequestDto requestDto)

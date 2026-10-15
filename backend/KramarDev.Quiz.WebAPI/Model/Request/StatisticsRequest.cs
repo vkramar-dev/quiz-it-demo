@@ -1,4 +1,6 @@
-﻿namespace KramarDev.Quiz.WebAPI.Model.Request;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace KramarDev.Quiz.WebAPI.Model.Request;
 
 public sealed class StatisticsRequest
 {
@@ -6,8 +8,10 @@ public sealed class StatisticsRequest
 
     public int ScoreThreshold { get; set; }
 
+    [Range(1, 100)]
     public int PageSize { get; set; }
 
+    [Range(0, int.MaxValue)]
     public int PageNumber { get; set; }
 
     public static StatisticsRequestDto ToBLL(StatisticsRequest model)
