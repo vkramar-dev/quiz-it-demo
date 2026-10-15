@@ -130,7 +130,7 @@ public static class StartupExtensions
 
             return new LogPlatform.LogClient.Logger(
                 sp.GetRequiredService<IHttpContextAccessor>(),
-                Product.FlashcardTrainer,
+                Product.QuizIT,
                 logapiSecret,
                 env.IsDevelopment() ? "https://localhost:7011" : null);
         });

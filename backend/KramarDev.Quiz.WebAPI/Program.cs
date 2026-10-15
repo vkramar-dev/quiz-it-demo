@@ -77,7 +77,7 @@ public class Program
 
         var logger = app.Services.GetRequiredService<KramarDev.LogPlatform.LogClient.ILogger>();
         await logger.LogAspNetInfoAsync(
-            "Flashcard API started", Severity.Low, SourceType.Backend, null, null, null, null, true);
+            "Quiz API started", Severity.Low, SourceType.Backend, null, null, null, null, true);
 
         using (var scope = app.Services.CreateScope())
         {
