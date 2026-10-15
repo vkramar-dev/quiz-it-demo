@@ -22,17 +22,13 @@ public sealed class JwtTokenGenerator(UserManager<User> userManager, IConfigurat
         var username = user.UserName
             ?? throw new InvalidOperationException("UserName is missing.");
 
-        var email = user.Email
-            ?? throw new InvalidOperationException("Email is missing.");
-
         var tokenKey = _config["JWTSettings:TokenKey"]
             ?? throw new InvalidOperationException("JWTSettings:TokenKey is not configured.");
 
         var claims = new List<Claim>
         {
             new(ClaimTypes.NameIdentifier, username),
-            new(ClaimTypes.Name, username),
-            new(ClaimTypes.Email, email)
+            new(ClaimTypes.Name, username)
         };
 
         var roles = await _userManager.GetRolesAsync(user);

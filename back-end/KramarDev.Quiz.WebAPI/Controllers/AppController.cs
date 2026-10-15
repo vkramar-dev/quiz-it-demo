@@ -29,7 +29,6 @@ public sealed class AppController(IApplicationDataStore dataService,
             {
                 model.User = new UserModel
                 {
-                    Email = user.Email,
                     Token = await _tokenService.GenerateTokenAsync(user),
                     Login = user.UserName
                 };
@@ -52,7 +51,6 @@ public sealed class AppController(IApplicationDataStore dataService,
 
         return new UserModel
         {
-            Email = user.Email,
             Token = await _tokenService.GenerateTokenAsync(user),
             Login = user.UserName
         };
@@ -65,7 +63,7 @@ public sealed class AppController(IApplicationDataStore dataService,
     {
         const string MemberRole = "Member";
 
-        var user = new User { UserName = register.Username, Email = register.Email };
+        var user = new User { UserName = register.Username };
 
         var result = await _userManager.CreateAsync(user, register.Password);
 
@@ -93,7 +91,6 @@ public sealed class AppController(IApplicationDataStore dataService,
 
         return new UserModel
         {
-            Email = user.Email,
             Token = await _tokenService.GenerateTokenAsync(user),
             Login = user.UserName
         };

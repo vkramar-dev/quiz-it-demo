@@ -37,7 +37,7 @@ public class Program
             opt.Password.RequireUppercase = false;
             opt.Password.RequiredLength = 6;
             opt.Password.RequireLowercase = false;
-            opt.User.RequireUniqueEmail = true;
+            opt.User.RequireUniqueEmail = false;
             opt.Password.RequireDigit = false;
             opt.Password.RequireNonAlphanumeric = false;
         })

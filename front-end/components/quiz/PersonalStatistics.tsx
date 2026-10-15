@@ -15,7 +15,6 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import QuizIcon from "@mui/icons-material/Quiz";
 import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
 import { RootState, useAppDispatch } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { getProfile, hide } from "@/redux/profileSlice";
@@ -141,12 +140,6 @@ export default function PersonalStatistics() {
                 <Typography variant="h6" sx={{ color: "#f1f5f9", fontWeight: 700 }}>
                   {user.login}
                 </Typography>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                  <EmailIcon sx={{ fontSize: 14, color: "#64748b" }} />
-                  <Typography variant="caption" sx={{ color: "#64748b" }}>
-                    {user.email}
-                  </Typography>
-                </Box>
               </Box>
             </Box>
             <Box sx={{ display: "flex", gap: 3 }}>

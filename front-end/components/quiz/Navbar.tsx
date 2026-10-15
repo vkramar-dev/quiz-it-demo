@@ -17,7 +17,6 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
-  Tooltip,
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import SchoolIcon from "@mui/icons-material/School";
@@ -174,17 +173,15 @@ export default function Navbar({ isInitialized }: NavbarProps) {
           >
             {!isInitialized ? null : user ? (
               <>
-                <Tooltip title={user.email}>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                    <PersonIcon sx={{ color: "#10b981", fontSize: 20 }} />
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "#e2e8f0", fontWeight: 600, fontSize: "0.85rem" }}
-                    >
-                      {user.login}
-                    </Typography>
-                  </Box>
-                </Tooltip>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <PersonIcon sx={{ color: "#10b981", fontSize: 20 }} />
+                  <Typography
+                    variant="body2"
+                    sx={{ color: "#e2e8f0", fontWeight: 600, fontSize: "0.85rem" }}
+                  >
+                    {user.login}
+                  </Typography>
+                </Box>
                 <Button
                   variant="outlined"
                   size="small"

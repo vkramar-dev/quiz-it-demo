@@ -20,7 +20,6 @@ import { ApiErrorPayload } from "@/biz/dto/ApiErrorPayload";
 export default function RegisterDialog() {
   const dispatch = useAppDispatch();
   const [username, setUsername] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [errors, setErrors] = useState<string[]>([]);
@@ -29,7 +28,6 @@ export default function RegisterDialog() {
   useEffect(() => {
     if (isRegisterDialogOpen) {
       setUsername("");
-      setEmail("");
       setPassword("");
       setConfirmPassword("");
       setErrors([]);
@@ -39,7 +37,7 @@ export default function RegisterDialog() {
   const handleSubmit = useCallback(async () => {
     const validationErrors: string[] = [];
 
-    if (!username || !email || !password) {
+    if (!username || !password) {
       validationErrors.push("Please fill in all fields.");
       setErrors(validationErrors);
       return;
@@ -51,14 +49,6 @@ export default function RegisterDialog() {
 
     if (username && username.length > 32) {
       validationErrors.push("Username must be less than 32 characters.");
-    }
-
-    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      validationErrors.push("Invalid email format.");
-    }
-
-    if (email && email.length > 255) {
-      validationErrors.push("Email must be less than 255 characters.");
     }
 
     let passwordIsValid = true;
@@ -86,13 +76,13 @@ export default function RegisterDialog() {
     }
 
     try {
-      await dispatch(registerInUser({ username, email, password })).unwrap();
+      await dispatch(registerInUser({ username, password })).unwrap();
     } catch (error) {
       const err = error as ApiErrorPayload;
       const messages = Object.values(err.error ?? {}).flat();
       setErrors(messages.length > 0 ? messages : ["Registration failed."]);
     }
-  }, [dispatch, username, email, password, confirmPassword]);
+  }, [dispatch, username, password, confirmPassword]);
 
   const handleKeyDown = useCallback(
     (e: React.KeyboardEvent) => {
@@ -131,17 +121,6 @@ export default function RegisterDialog() {
           label="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          onKeyDown={handleKeyDown}
-          autoComplete="off"
-          sx={textFieldSx}
-        />
-
-        <TextField
-          fullWidth
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           onKeyDown={handleKeyDown}
           autoComplete="off"
           sx={textFieldSx}
